@@ -1,0 +1,19 @@
+{
+  "name": "daniels-prestigefyllda-kod-verktyg",
+  "version": "1.0.0",
+  "description": "Verktyg för att bedöma och kommentera programmerings uppgifter och kodlösningar.",
+  "main": "app.js",
+  "scripts": {
+    "devStart": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
