@@ -33,10 +33,34 @@ class MyIndex extends HTMLElement {
       });
     }
   
-    handleSubmit(username) {
-      console.log('GitHub Username:', username); // Handle the username (e.g., fetch user data)
-      // Additional functionality can be added here.
-    }
+    async handleSubmit(username) {
+      console.log('GitHub Username:', username); // Log the username
+  
+      try {
+          let formData = new FormData()
+          formData.append('username', username)
+          const response = await fetch('/search', {
+              method: 'POST', // Specify the method as POST
+              body: formData
+          });
+  
+          if (!response.ok) {
+              // Handle errors (optional)
+              throw new Error('Network response was not ok');
+          }
+          else{
+            //IF THE RESPONSE IS OK
+            
+          }
+  
+          const data = await response.json(); // Parse the JSON response
+          console.log('Response data:', data); // Log the response data
+          // Additional functionality can be added here.
+  
+      } catch (error) {
+          console.error('Error fetching data:', error); // Handle errors
+      }
+  }
   
     async #loadStyles() {
       const response = await fetch('src/css/style-index.css'); // Adjust the path if necessary
