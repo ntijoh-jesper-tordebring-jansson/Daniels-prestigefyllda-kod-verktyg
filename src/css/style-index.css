@@ -1,0 +1,24 @@
+/* styles.css */
+* {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+body{
+    padding: 0px;
+    margin: 0px;
+}
+
+h2 {
+    color: blue; /* Example style */
+    font-family: Arial, sans-serif; /* Example style */
+}
+
+div {
+    width: 100vw;
+    background-color: lightgray; /* Example style */
+    padding: 10px; /* Optional: Add padding inside the div */
+    background-color: yellow;
+}
+
