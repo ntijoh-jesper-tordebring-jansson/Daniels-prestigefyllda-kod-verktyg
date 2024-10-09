@@ -59,3 +59,9 @@ main p{
     color: black;
     margin-top: 10px;
 }
+
+#githubForm{
+    opacity: 35%;
+    margin-right: 70%;
+    
+}
