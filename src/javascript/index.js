@@ -10,9 +10,15 @@ class MyIndex extends HTMLElement {
       <style>
         ${styles}
       </style>
-      <div id="fortniteDiv">
-          <h2>TETA</h2>
-      </div>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- Include the Material Icons font in the Shadow DOM -->
+      <header>
+          <span id="profileIcon" class="material-icons">&#xe851;</span>  <!-- Correct icon usage -->
+          
+      </header>
+      <main>
+          <h1>Welcome to Teacher-O-Matic!</h1>
+          <p>Enter your GitHub username in the header field</p>
+      </main>
     `;
   }
 
