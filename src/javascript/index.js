@@ -71,13 +71,43 @@ class MyIndex extends HTMLElement {
       const repoItem = document.createElement('div');
       repoItem.innerHTML = `
         <h3>${repo.name}</h3>
-        <button></button>
+        <button id="forkButton">Show Forks</button>
         <a href="${repo.html_url}" target="_blank">Show on Github</a>
         <p>${repo.forks_count}</p>
       `;
+      const forkButton = repoItem.querySelector('#forkButton');
+      forkButton.addEventListener('click', () => this.handleForks(repo.full_name));
       repoList.appendChild(repoItem);
     });
   }
+
+  async handleForks(fullname) {
+    console.log(fullname);
+  
+    try {
+      const response = await fetch('/get-forks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullname: fullname,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch forks');
+      }
+  
+      // Optionally handle the response data here
+      const data = await response.json();
+      console.log(data);
+  
+    } catch (error) {
+      console.error('Error fetching forks:', error);
+    }
+  }
+  
 
   async #loadStyles() {
     const response = await fetch('src/css/style-index.css');
@@ -86,3 +116,4 @@ class MyIndex extends HTMLElement {
 }
 
 customElements.define('my-index', MyIndex);
+ 
