@@ -61,6 +61,7 @@ class MyIndex extends HTMLElement {
   displayRepos(repos) {
     const repoList = this.shadowRoot.getElementById('repoList');
     repoList.innerHTML = '';  // Clear any previous content
+    const styles = this.#loadStyles();
 
     if (repos.length === 0) {
       repoList.innerHTML = '<p>No repositories found for this user.</p>';
@@ -69,11 +70,17 @@ class MyIndex extends HTMLElement {
 
     repos.forEach(repo => {
       const repoItem = document.createElement('div');
+      
       repoItem.innerHTML = `
-        <h3>${repo.name}</h3>
-        <button id="forkButton">Show Forks</button>
-        <a href="${repo.html_url}" target="_blank">Show on Github</a>
-        <p>${repo.forks_count}</p>
+        <style>
+          ${styles}
+        </style>
+        <div id="forkWrapper"> 
+          <h3 id='repoH3'>${repo.name}</h3>
+          <button id="forkButton">Show Forks</button>
+          <a href="${repo.html_url}" target="_blank">Show on Github</a>
+          <p>${repo.forks_count}</p>
+        </div>
       `;
       const forkButton = repoItem.querySelector('#forkButton');
       forkButton.addEventListener('click', () => this.handleForks(repo.full_name));
@@ -113,6 +120,9 @@ class MyIndex extends HTMLElement {
     const response = await fetch('src/css/style-index.css');
     return await response.text();
   }
+
+
+
 }
 
 customElements.define('my-index', MyIndex);
