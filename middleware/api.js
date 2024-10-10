@@ -25,7 +25,7 @@ class Api {
 
             for(let i = 0; i < json.length; i++) {
                 this.repositories.push(
-                    { "name" : json[i].name, "url" : json[i].html_url, "forks_url" : json[i].forks_url, "forks_count" : json[i].forks_count }
+                    { "full_name" : json[i].full_name, "name" : json[i].name, "url" : json[i].html_url, "forks_count" : json[i].forks_count }
                 );
             }
 

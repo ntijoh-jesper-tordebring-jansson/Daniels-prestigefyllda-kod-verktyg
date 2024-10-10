@@ -32,7 +32,6 @@ app.post('/search', async (req, res) => {
 
     try {
         const content = await api.getRepository(username); 
-        console.log(content);
         res.json(content);
     } catch (error) {
         console.error(error.message);
