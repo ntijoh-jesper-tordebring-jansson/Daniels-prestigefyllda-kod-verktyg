@@ -1,0 +1,40 @@
+#forkWrapper {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin-top: 10px;
+    border: 1px lightgray solid;
+    border-bottom: 2px darkgray solid; 
+}
+
+#repoH3 {
+    color: black;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    padding-bottom: 15px;
+    padding-left: 5px;
+}
+
+.infoText {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+#forkWrapper a {
+    display: inline;
+    color: rgb(0, 129, 158);
+    text-decoration: none;
+    padding: 5px;
+}
+
+#forkWrapper a:hover {
+    cursor: pointer;
+}
+
+#forkWrapper p {
+    margin: 0;
+    color: gray;
+    margin-left: auto;
+}

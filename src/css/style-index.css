@@ -26,19 +26,6 @@ header {
     align-items: center;
 }
 
-#repoH3{
-    color: green;
-    
-}
-
-#forkWrapper{
-    border: 3px;
-    border-color: red;
-    background-color: lightgray;
-    border-style: dotted;
-    margin: 10px;
-}
-
 header h2 {
     color: white;
     font-family: Arial, sans-serif;
@@ -52,12 +39,12 @@ header .material-icons {
 }
 
 main {
-    display: flex;
-    flex-direction: column;
-    
-    align-items: center;
-    height: 85vh; /* Remaining height of the page */
     background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
 
 main h1 {
@@ -77,4 +64,15 @@ main p{
     opacity: 35%;
     margin-right: 70%;
     
+}
+
+#repoList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#repoList>* {
+    flex-basis: 26%;
 }

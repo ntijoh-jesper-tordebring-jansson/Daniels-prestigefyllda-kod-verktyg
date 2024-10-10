@@ -5,7 +5,7 @@ class MyIndex extends HTMLElement {
   }
 
   async connectedCallback() {
-    const styles = await this.#loadStyles();
+    const styles = await this.#loadStyles("style-index");
     this.shadowRoot.innerHTML = `
       <style>
         ${styles}
@@ -58,10 +58,10 @@ class MyIndex extends HTMLElement {
   }
 
   // Function to display repositories (without description)
-  displayRepos(repos) {
+  async displayRepos(repos) {
     const repoList = this.shadowRoot.getElementById('repoList');
     repoList.innerHTML = '';  // Clear any previous content
-    const styles = this.#loadStyles();
+    const styles = await this.#loadStyles("style-repo");
 
     if (repos.length === 0) {
       repoList.innerHTML = '<p>No repositories found for this user.</p>';
@@ -77,9 +77,12 @@ class MyIndex extends HTMLElement {
         </style>
         <div id="forkWrapper"> 
           <h3 id='repoH3'>${repo.name}</h3>
-          <button id="forkButton">Show Forks</button>
-          <a href="${repo.html_url}" target="_blank">Show on Github</a>
-          <p>${repo.forks_count}</p>
+          <div class="infoText">
+            <a id="forkButton">Show Forks</a>
+            <span>|</span>
+            <a href="${repo.html_url}" target="_blank">Show on Github</a>
+            <p>${repo.forks_count}</p>
+          </div>
         </div>
       `;
       const forkButton = repoItem.querySelector('#forkButton');
@@ -116,8 +119,8 @@ class MyIndex extends HTMLElement {
   }
   
 
-  async #loadStyles() {
-    const response = await fetch('src/css/style-index.css');
+  async #loadStyles(styleFile) {
+    const response = await fetch(`src/css/${styleFile}.css`);
     return await response.text();
   }
 
