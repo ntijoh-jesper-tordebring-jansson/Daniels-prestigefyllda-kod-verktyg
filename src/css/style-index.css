@@ -26,6 +26,19 @@ header {
     align-items: center;
 }
 
+#repoH3{
+    color: green;
+    
+}
+
+#forkWrapper{
+    border: 3px;
+    border-color: red;
+    background-color: lightgray;
+    border-style: dotted;
+    margin: 10px;
+}
+
 header h2 {
     color: white;
     font-family: Arial, sans-serif;
