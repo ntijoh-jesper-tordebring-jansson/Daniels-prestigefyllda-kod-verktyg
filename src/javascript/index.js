@@ -33,32 +33,25 @@ class MyIndex extends HTMLElement {
       });
     }
   
-    async handleSubmit(username) {
-      console.log('GitHub Username:', username); // Log the username
-  
+    async handleSubmit(username) {  
       try {
-          let formData = new FormData()
-          formData.append('username', username)
           const response = await fetch('/search', {
-              method: 'POST', // Specify the method as POST
-              body: formData
+              method: 'POST', 
+              headers: {
+                  'Content-Type': 'application/json' // Ställ in korrekt header
+              },
+              body: JSON.stringify({ username }) // Skicka JSON
           });
-  
+
           if (!response.ok) {
-              // Handle errors (optional)
               throw new Error('Network response was not ok');
           }
-          else{
-            //IF THE RESPONSE IS OK
-            
-          }
-  
-          const data = await response.json(); // Parse the JSON response
-          console.log('Response data:', data); // Log the response data
-          // Additional functionality can be added here.
-  
+
+          const data = await response.json(); 
+          console.log('Response data:', data);
+
       } catch (error) {
-          console.error('Error fetching data:', error); // Handle errors
+          console.error('Error fetching data:', error);
       }
   }
   

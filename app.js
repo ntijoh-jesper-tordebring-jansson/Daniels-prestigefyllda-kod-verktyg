@@ -19,31 +19,26 @@ app.use('/src', express.static(path.join(__dirname, 'src')));
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+app.use(express.json());
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 })
 
 app.post('/search', async (req, res) => {
-    const username = "ntijoh-daniel-berg";
+    const username = req.body.username;
 
     const api = new Api();
 
-
     try {
-        const content = await api.getRepository(username); // Väntar på resultatet
-        console.log(content); // Logga innehållet
-        res.json(content); // Skicka tillbaka innehållet som JSON till klienten
+        const content = await api.getRepository(username); 
+        console.log(content);
+        res.json(content);
     } catch (error) {
-        console.error(error.message); // Logga eventuella fel
-        res.status(500).json({ error: error.message }); // Skicka tillbaka felmeddelande
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
     }
-
-
-    // async (username) => {
-    //     const content = await api.getRepository(username);
-    //     console.log(content);   
-    // }
-})
+});
 
 // Confirm that the server is running
 app.listen(PORT, () => {
