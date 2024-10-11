@@ -120,6 +120,7 @@ class MyIndex extends HTMLElement {
       //Re-render with forks
       //Write render-forks function
       //console.log('This is data: ' + JSON.stringify(data))
+      console.log('This is the data: ' + JSON.stringify(data))
       this.forkRender(data);
     } 
     
@@ -130,37 +131,40 @@ class MyIndex extends HTMLElement {
   }
   
 
- list-forks
+
   async forkRender(forkData) {
     const repoList = this.shadowRoot.getElementById('repoList');
     repoList.innerHTML = '';  // Clear any previous contents 
 
     // Load styles once at the start
     const styles = await this.#loadStyles();
-    
+
     forkData.forEach(currentMap => {
         const forkItem = document.createElement('div');
-        const fork = currentMap.fork;  // Access the fork object
+        const fork = currentMap;  // Use currentMap directly since it holds the fork object
 
         console.log('This is currentMap;' + JSON.stringify(currentMap));
-        console.log('This is the fork map:' + JSON.stringify(fork));
-        console.log('This is the fork id: ' + fork['id']);
 
-        // Create the HTML for each fork
+        // Split the fullname to get the username and repository name
+        const [username, repoName] = fork.full_name.split('/');
+
+        // Create the HTML for each fork with user and repo name
         forkItem.innerHTML = `
             <style>
                 ${styles}
             </style>
             <div id="forkDiv">
-                <h3>${fork['name']}</h3>
-                <a href="${fork['html_url']}" target="_blank">Show Fork on Github</a>
-                <p>fork id: ${fork['id']}</p>
+                <h3>${repoName}</h3> <!-- Display the repository name -->
+                <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p> <!-- Link to the user's GitHub profile -->
+                <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+                
             </div>
         `;
         
         repoList.appendChild(forkItem);  // Append each fork item to the repo list
     });
 }
+
 
 
   async #loadStyles() {
