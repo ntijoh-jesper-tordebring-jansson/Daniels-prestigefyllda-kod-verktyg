@@ -15,7 +15,6 @@ class MyIndex extends HTMLElement {
           <span id="profileIcon" class="material-icons">&#xe851;</span>
           <form id="githubForm">
             <input type="text" id="username" required />
-            <button type="submit">Submit</button>
           </form>
       </header>
       <main id="mainContent">
@@ -27,11 +26,15 @@ class MyIndex extends HTMLElement {
       </main>
     `;
 
-    const form = this.shadowRoot.getElementById('githubForm');
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const username = this.shadowRoot.getElementById('username').value;
-      this.handleSubmit(username);
+    const inputField = this.shadowRoot.querySelector('#username');
+
+    inputField.addEventListener('keydown', (event) => {
+      if(event.code === "Enter") {
+        event.preventDefault();
+        
+        const username = this.shadowRoot.querySelector('#username').value;
+        this.handleSubmit(username);
+      }
     });
   }
 
