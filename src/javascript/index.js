@@ -129,7 +129,7 @@ class MyIndex extends HTMLElement {
 
   async forkRender(forkData) {
     const repoList = this.shadowRoot.getElementById('repoList');
-    repoList.innerHTML = '';  // Clear any previous content
+    repoList.innerHTML = '';  // Clear any previous contents 
 
     // Load styles once at the start
     const styles = await this.#loadStyles();
