@@ -64,8 +64,6 @@ class Api {
         }
     }
 
-
-
     async getManifestFile(fullname) {
         this.url = `https://api.github.com/repos/${fullname}/contents/.manifest.json`;
     
@@ -77,7 +75,7 @@ class Api {
             });
     
             if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`); // Kasta fel om filen inte hittas
+                throw new Error(`Response status: ${response.status}`);
             }
     
             const json = await response.json();
@@ -87,14 +85,12 @@ class Api {
             }
     
             const content = Buffer.from(json.content, 'base64').toString();
-            return JSON.parse(content); // Returnera JSON-innehåll
+            return JSON.parse(content); 
         } catch (error) {
             console.error(`Error fetching manifest file for ${fullname}: ${error.message}`);
             throw error;
         }
     }
-
-
 
     async getFileContent(fullname, filePath) {
         this.url = `https://api.github.com/repos/${fullname}/contents/${filePath}`;
@@ -112,7 +108,7 @@ class Api {
     
             const json = await response.json();
             const content = Buffer.from(json.content, 'base64').toString();
-            return content; // Returnerar innehållet i filen
+            return content;
         } catch (error) {
             console.error(error.message);
         }
