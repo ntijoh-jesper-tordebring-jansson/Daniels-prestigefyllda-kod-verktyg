@@ -90,7 +90,6 @@ class MyIndex extends HTMLElement {
       repoList.appendChild(repoItem);
     });
   }
-
   async handleForks(fullname) {
     console.log(fullname);
   
@@ -108,21 +107,69 @@ class MyIndex extends HTMLElement {
       if (!response.ok) {
         throw new Error('Failed to fetch forks');
       }
-  
-      // Optionally handle the response data here
+      
       const data = await response.json();
-      console.log(data);
+      console.log(data);  // Check the API response structure here
   
-    } catch (error) {
+      // If the API returns an array of forks:
+      if (data.length === 0) {
+        console.log("No forks in this repo");
+        return;
+      }
+      console.log("billyspanpizza");
+      //Re-render with forks
+      //Write render-forks function
+      //console.log('This is data: ' + JSON.stringify(data))
+      this.forkRender(data);
+    } 
+    
+    catch (error) {
       console.error('Error fetching forks:', error);
     }
+    
   }
   
 
-  async #loadStyles(styleFile) {
-    const response = await fetch(`src/css/${styleFile}.css`);
+ list-forks
+  async forkRender(forkData) {
+    const repoList = this.shadowRoot.getElementById('repoList');
+    repoList.innerHTML = '';  // Clear any previous contents 
+
+    // Load styles once at the start
+    const styles = await this.#loadStyles();
+    
+    forkData.forEach(currentMap => {
+        const forkItem = document.createElement('div');
+        const fork = currentMap.fork;  // Access the fork object
+
+        console.log('This is currentMap;' + JSON.stringify(currentMap));
+        console.log('This is the fork map:' + JSON.stringify(fork));
+        console.log('This is the fork id: ' + fork['id']);
+
+        // Create the HTML for each fork
+        forkItem.innerHTML = `
+            <style>
+                ${styles}
+            </style>
+            <div id="forkDiv">
+                <h3>${fork['name']}</h3>
+                <a href="${fork['html_url']}" target="_blank">Show Fork on Github</a>
+                <p>fork id: ${fork['id']}</p>
+            </div>
+        `;
+        
+        repoList.appendChild(forkItem);  // Append each fork item to the repo list
+    });
+}
+
+
+  async #loadStyles() {
+    const response = await fetch('src/css/style-index.css');
+
     return await response.text();
   }
+
+
 
 
 
