@@ -53,11 +53,11 @@ app.post('/get-forks', async (req, res) => {
 
             const manifest = await api.getManifestFile(fullname);
             const fileContent = await api.getFileContent(fullname, manifest.filePath);
-            
+
             return {
-                fork: fork.full_name,
-                manifest,
-                fileContent
+                "full_name" : fork.full_name.full_name,
+                "gh_link" : fork.full_name.html_url,
+                "fileContent" : fileContent
             };
         }));
 
