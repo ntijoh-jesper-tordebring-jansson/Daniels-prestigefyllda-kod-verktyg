@@ -49,18 +49,16 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  // Function to clear intro text
   clearIntroText() {
     const introText = this.shadowRoot.getElementById('introText');
     if (introText) {
-      introText.remove();  // Remove the intro text div from the DOM
+      introText.remove();
     }
   }
 
-  // Function to display repositories (without description)
   async displayRepos(repos) {
     const repoList = this.shadowRoot.getElementById('repoList');
-    repoList.innerHTML = '';  // Clear any previous content
+    repoList.innerHTML = '';  // Clear previous content
     const styles = await this.#loadStyles("style-repo");
 
     if (repos.length === 0) {
@@ -78,106 +76,74 @@ class MyIndex extends HTMLElement {
         <div id="forkWrapper"> 
           <h3 id='repoH3'>${repo.name}</h3>
           <div class="infoText">
-            <a id="forkButton">Show Forks</a>
+            <button class="forkButton">Show Forks</button>
             <span>|</span>
             <a href="${repo.html_url}" target="_blank">Show on Github</a>
             <p>${repo.forks_count}</p>
           </div>
         </div>
       `;
-      const forkButton = repoItem.querySelector('#forkButton');
+      const forkButton = repoItem.querySelector('.forkButton');
       forkButton.addEventListener('click', () => this.handleForks(repo.full_name));
       repoList.appendChild(repoItem);
     });
   }
+
   async handleForks(fullname) {
-    console.log(fullname);
-  
     try {
       const response = await fetch('/get-forks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          fullname: fullname,
-        }),
+        body: JSON.stringify({ fullname: fullname }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to fetch forks');
       }
       
       const data = await response.json();
-      console.log(data);  // Check the API response structure here
-  
-      // If the API returns an array of forks:
       if (data.length === 0) {
         console.log("No forks in this repo");
         return;
       }
-      console.log("billyspanpizza");
-      //Re-render with forks
-      //Write render-forks function
-      //console.log('This is data: ' + JSON.stringify(data))
-      console.log('This is the data: ' + JSON.stringify(data))
       this.forkRender(data);
-    } 
-    
-    catch (error) {
+    } catch (error) {
       console.error('Error fetching forks:', error);
     }
-    
   }
-  
-
 
   async forkRender(forkData) {
     const repoList = this.shadowRoot.getElementById('repoList');
-    repoList.innerHTML = '';  // Clear any previous contents 
+    repoList.innerHTML = '';  // Clear previous contents 
 
-    // Load styles once at the start
-    const styles = await this.#loadStyles();
+    const styles = await this.#loadStyles("style-fork");
 
     forkData.forEach(currentMap => {
-        const forkItem = document.createElement('div');
-        const fork = currentMap;  // Use currentMap directly since it holds the fork object
+      const forkItem = document.createElement('div');
+      const fork = currentMap;
 
-        console.log('This is currentMap;' + JSON.stringify(currentMap));
-
-        // Split the fullname to get the username and repository name
-        const [username, repoName] = fork.full_name.split('/');
-
-        // Create the HTML for each fork with user and repo name
-        forkItem.innerHTML = `
-            <style>
-                ${styles}
-            </style>
-            <div id="forkDiv">
-                <h3>${repoName}</h3> <!-- Display the repository name -->
-                <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p> <!-- Link to the user's GitHub profile -->
-                <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
-                
-            </div>
-        `;
-        
-        repoList.appendChild(forkItem);  // Append each fork item to the repo list
+      const [username, repoName] = fork.full_name.split('/');
+      forkItem.innerHTML = `
+        <style>
+          ${styles}
+        </style>
+        <div id="forkDiv">
+            <h3>${repoName}</h3>
+            <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
+            <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+        </div>
+      `;
+      
+      repoList.appendChild(forkItem);
     });
-}
-
-
-
-  async #loadStyles() {
-    const response = await fetch('src/css/style-index.css');
-
-    return await response.text();
   }
 
-
-
-
-
+  async #loadStyles(styleFile) {
+    const response = await fetch(`src/css/${styleFile}.css`);
+    return await response.text();
+  }
 }
 
 customElements.define('my-index', MyIndex);
- 
