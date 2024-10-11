@@ -2,11 +2,10 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const path = require('path');
-const simpleGit = require('simple-git');
-const fs = require('fs');
 
 // Load custom modules
 const Api = require('./middleware/api');
+const Test = require('./middleware/tests')
 
 // Configure dotenv (which makes is possible to use .env files)
 dotenv.config();
@@ -41,23 +40,24 @@ app.post('/search', async (req, res) => {
     }
 });
 
+
+
 app.post('/get-forks', async (req, res) => {
     const fullname = req.body.fullname;
-    
     const api = new Api();
 
     try {
         const forks = await api.getForks(fullname);
 
         const forksWithContent = await Promise.all(forks.map(async (fork) => {
-
-            const manifest = await api.getManifestFile(fullname);
-            const fileContent = await api.getFileContent(fullname, manifest.filePath);
-
+            const manifest = await api.getManifestFile(fork.full_name.full_name);  // Hämtar manifestfilen för varje fork
+            const fileContent = await api.getFileContent(fork.full_name.full_name, manifest.filePath); // Filen som ska visas (från manifest)
+            
             return {
-                "full_name" : fork.full_name.full_name,
-                "gh_link" : fork.full_name.html_url,
-                "fileContent" : fileContent
+                "full_name": fork.full_name.full_name,
+                "gh_link": fork.full_name.html_url,
+                "fileContent": fileContent,
+                "testFilePath": manifest.filePath // Inkludera testfilens sökväg
             };
         }));
 
@@ -69,63 +69,90 @@ app.post('/get-forks', async (req, res) => {
 });
 
 
+// app.post('/get-forks', async (req, res) => {
+//     const fullname = req.body.fullname;
+    
+//     const api = new Api();
+
+//     try {
+//         const forks = await api.getForks(fullname);
+
+//         const forksWithContent = await Promise.all(forks.map(async (fork) => {
+
+//             const manifest = await api.getManifestFile(fullname);
+//             const fileContent = await api.getFileContent(fullname, manifest.filePath);
+
+//             return {
+//                 "full_name" : fork.full_name.full_name,
+//                 "gh_link" : fork.full_name.html_url,
+//                 "fileContent" : fileContent
+//             };
+//         }));
+
+//         res.json(forksWithContent);
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ error: error.message });
+//     }
+// });
+
 
 
 
 
 app.post('/run-tests', async (req, res) => {
-    const { fullname, testFilePath } = req.body;
+    const { fullname } = req.body;
     const api = new Api();
+    const test = new Test();
 
     try {
-        // 1. Klona repository till servern
-        const repoPath = await cloneRepository(fullname);
+        // Klona repo och hämta manifest
+        const repoPath = await test.cloneRepository(fullname);
+        const manifest = await api.getManifestFile(fullname);
+        const fileContent = await api.getFileContent(fullname, manifest.filePath);
 
-        // 2. Kör testerna och få resultat
-        const testResults = await runTests(repoPath, testFilePath);
+        // Kör tester baserat på manifest
+        const testResults = await test.runTests(manifest, fileContent);
 
-        // 3. Returnera testresultaten till klienten
-        res.json({ success: true, testResults });
+        // Returnera testresultaten till klienten
+        res.json({ testResults });
+
+        // Delete downloaded thing
+        test.removeFile(fullname);
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
 
+// app.post('/run-tests', async (req, res) => {
+//     const { fullname, testFilePath } = req.body;
+//     const test = new Test();
 
-async function cloneRepository(fullname) {
-    const repoPath = path.join(__dirname, 'repositories', fullname.replace('/', '_')); // Spara under en unik mapp
-    const git = simpleGit();
+//     try {
+//         // 1. Klona repository till servern
+//         const repoPath = await test.cloneRepository(fullname);
 
-    try {
-        if (fs.existsSync(repoPath)) {
-            // Om mappen redan finns, uppdatera repo istället för att klona om
-            await git.cwd(repoPath).pull();
-        } else {
-            // Klona om mappen inte finns
-            await git.clone(`https://github.com/${fullname}.git`, repoPath);
-        }
+//         // 2. Kör testerna och få resultat
+//         const testResults = await test.runTests(repoPath, testFilePath);
 
-        console.log(`Repository ${fullname} cloned successfully to ${repoPath}`);
-        return repoPath;
-    } catch (error) {
-        console.error(`Failed to clone repository: ${error.message}`);
-    }
-}
+//         // 3. Returnera testresultaten till klienten
+//         console.log(testResults);
+//         res.json({ success: true, testResults });
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ success: false, error: error.message });
+//     }
+// });
 
-const { exec } = require('child_process');
 
-async function runTests(repoPath, testFilePath) {
-    return new Promise((resolve, reject) => {
-        exec(`npx mocha ${path.join(repoPath, testFilePath)}`, (error, stdout, stderr) => {
-            if (error) {
-                reject(`Error running tests: ${stderr}`);
-            }
-            resolve(stdout); // Returnerar testresultaten som sträng
-        });
-    });
-}
+
+
+
+
+
+
 
 
 
