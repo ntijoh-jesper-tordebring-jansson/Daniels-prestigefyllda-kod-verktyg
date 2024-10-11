@@ -49,18 +49,16 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  // Function to clear intro text
   clearIntroText() {
     const introText = this.shadowRoot.getElementById('introText');
     if (introText) {
-      introText.remove();  // Remove the intro text div from the DOM
+      introText.remove();
     }
   }
 
-  // Function to display repositories (without description)
   async displayRepos(repos) {
     const repoList = this.shadowRoot.getElementById('repoList');
-    repoList.innerHTML = '';  // Clear any previous content
+    repoList.innerHTML = '';  // Clear previous content
     const styles = await this.#loadStyles("style-repo");
 
     if (repos.length === 0) {
@@ -78,55 +76,74 @@ class MyIndex extends HTMLElement {
         <div id="forkWrapper"> 
           <h3 id='repoH3'>${repo.name}</h3>
           <div class="infoText">
-            <a id="forkButton">Show Forks</a>
+            <button class="forkButton">Show Forks</button>
             <span>|</span>
             <a href="${repo.html_url}" target="_blank">Show on Github</a>
             <p>${repo.forks_count}</p>
           </div>
         </div>
       `;
-      const forkButton = repoItem.querySelector('#forkButton');
+      const forkButton = repoItem.querySelector('.forkButton');
       forkButton.addEventListener('click', () => this.handleForks(repo.full_name));
       repoList.appendChild(repoItem);
     });
   }
 
   async handleForks(fullname) {
-    console.log(fullname);
-  
     try {
       const response = await fetch('/get-forks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          fullname: fullname,
-        }),
+        body: JSON.stringify({ fullname: fullname }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to fetch forks');
       }
-  
-      // Optionally handle the response data here
+      
       const data = await response.json();
-      console.log(data);
-  
+      if (data.length === 0) {
+        console.log("No forks in this repo");
+        return;
+      }
+      this.forkRender(data);
     } catch (error) {
       console.error('Error fetching forks:', error);
     }
   }
-  
+
+  async forkRender(forkData) {
+    const repoList = this.shadowRoot.getElementById('repoList');
+    repoList.innerHTML = '';  // Clear previous contents 
+
+    const styles = await this.#loadStyles("style-fork");
+
+    forkData.forEach(currentMap => {
+      const forkItem = document.createElement('div');
+      const fork = currentMap;
+
+      const [username, repoName] = fork.full_name.split('/');
+      forkItem.innerHTML = `
+        <style>
+          ${styles}
+        </style>
+        <div id="forkDiv">
+            <h3>${repoName}</h3>
+            <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
+            <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+        </div>
+      `;
+      
+      repoList.appendChild(forkItem);
+    });
+  }
 
   async #loadStyles(styleFile) {
     const response = await fetch(`src/css/${styleFile}.css`);
     return await response.text();
   }
-
-
-
 }
 
 customElements.define('my-index', MyIndex);
- 
