@@ -157,7 +157,9 @@ class MyIndex extends HTMLElement {
                 <h3>${repoName}</h3> <!-- Display the repository name -->
                 <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p> <!-- Link to the user's GitHub profile -->
                 <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
-                
+                <pre><code class="language-css">
+                  color: red;
+                </code></pre>
             </div>
         `;
         

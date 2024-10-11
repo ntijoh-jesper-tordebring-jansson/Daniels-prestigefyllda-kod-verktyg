@@ -76,3 +76,39 @@ main p{
 #repoList>* {
     flex-basis: 26%;
 }
+
+
+
+/* PRISM STYLING IN INDEX */
+
+/* Add styles for the code block */
+code {
+    display: block; /* Makes the code block take full width */
+    padding: 1em; /* Adds some padding for better readability */
+    margin: 1em 0; /* Adds space around the code block */
+    background: red; /* Dark background for the code block */
+    color: #f8f8f2; /* Light text color */
+    border-radius: 5px; /* Rounded corners */
+    font-family: 'Fira Code', monospace; /* Monospace font for better readability */
+    overflow-x: auto; /* Allows horizontal scrolling for long lines */
+}
+
+/* Style for the syntax highlighting */
+.token {
+    color: #66d9ef; /* Color for keywords */
+}
+.token.function {
+    color: #a6e22e; /* Color for functions */
+}
+.token.variable {
+    color: #f92672; /* Color for variables */
+}
+.token.comment {
+    color: #75715e; /* Color for comments */
+    font-style: italic; /* Italic for comments */
+}
+
+/* Add hover effect for the code block */
+code:hover {
+    background: #444; /* Darker background on hover */
+}
