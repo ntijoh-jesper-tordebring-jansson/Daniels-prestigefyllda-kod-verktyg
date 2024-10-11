@@ -76,7 +76,7 @@ class MyIndex extends HTMLElement {
         <div id="forkWrapper"> 
           <h3 id='repoH3'>${repo.name}</h3>
           <div class="infoText">
-            <button class="forkButton">Show Forks</button>
+            <a class="forkButton">Show Forks</a>
             <span>|</span>
             <a href="${repo.html_url}" target="_blank">Show on Github</a>
             <p>${repo.forks_count}</p>
