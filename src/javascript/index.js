@@ -1,4 +1,6 @@
 class MyIndex extends HTMLElement {
+  isInputInFocus = false;
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -12,8 +14,8 @@ class MyIndex extends HTMLElement {
       </style>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <header>
-          <span id="profileIcon" class="material-icons">&#xe851;</span>
           <form id="githubForm">
+            <span id="profileIcon" class="material-icons">&#xe851;</span>
             <input type="text" id="username" required />
           </form>
       </header>
@@ -31,11 +33,41 @@ class MyIndex extends HTMLElement {
     inputField.addEventListener('keydown', (event) => {
       if(event.code === "Enter") {
         event.preventDefault();
-        
+
         const username = this.shadowRoot.querySelector('#username').value;
         this.handleSubmit(username);
       }
     });
+
+    inputField.addEventListener('focus', () => {
+      this.#ToggleInputFocus();
+    })
+
+    inputField.addEventListener('focusout', () => {
+      this.#ToggleInputFocus();
+    })
+  }
+
+  disconnectedCallback() {
+    const inputField = this.shadowRoot.querySelector('#username');
+
+    inputField.removeEventListener('keydown');
+    inputField.removeEventListener('focus');
+    inputField.removeEventListener('focusout');
+  }
+
+  #ToggleInputFocus() {
+    this.isInputInFocus = !this.isInputInFocus;
+    let header = this.shadowRoot.querySelector('header');
+    let profileIcon = this.shadowRoot.querySelector('#profileIcon');
+
+    if(this.isInputInFocus) {
+      header.style.backgroundColor = "White";
+      profileIcon.style.color = "Black";
+    } else { 
+      header.style.backgroundColor = "rgb(240,108,116)";
+      profileIcon.style.color = "White";
+    }
   }
 
   async handleSubmit(username) {  

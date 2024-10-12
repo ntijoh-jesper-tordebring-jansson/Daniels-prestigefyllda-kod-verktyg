@@ -10,19 +10,32 @@
     margin-left: 10px;
 }
 
-#githubForm{
-    /* opacity: 35%; */
-    /* margin-right: 70%; */
+#githubForm {
+    display: flex;
+    justify-content: center;
 }
 
 #username {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
     padding: 10px;
     border: none;
     background-color: transparent;
 }
 
+#username:focus {
+    outline: none;
+}
+
+#username:-webkit-autofill,
+#username:-webkit-autofill:hover, 
+#username:-webkit-autofill:focus, 
+#username:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px rgb(240,108,116) inset !important;
+}
+
 header {
-    width: 100vw;
+    width: 100%;
     height: 10vh; /* 15% of the viewport height */
     background-color: rgb(240,108,116); /* Reddish-pink background */
     display: flex;
