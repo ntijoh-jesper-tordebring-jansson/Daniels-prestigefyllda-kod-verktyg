@@ -27,12 +27,20 @@
     outline: none;
 }
 
-#username:-webkit-autofill,
-#username:-webkit-autofill:hover, 
-#username:-webkit-autofill:focus, 
-#username:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px rgb(240,108,116) inset !important;
+.notInFocus:-webkit-autofill,
+.notInFocus:-webkit-autofill:hover, 
+.notInFocus:-webkit-autofill:focus,
+.notInFocus:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px rgba(240, 108, 117) inset !important;
 }
+
+.inFocus:-webkit-autofill,
+.inFocus:-webkit-autofill:hover, 
+.inFocus:-webkit-autofill:focus,
+.inFocus:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
 
 header {
     width: 100%;

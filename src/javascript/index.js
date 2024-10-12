@@ -16,7 +16,7 @@ class MyIndex extends HTMLElement {
       <header>
           <form id="githubForm">
             <span id="profileIcon" class="material-icons">&#xe851;</span>
-            <input type="text" id="username" required />
+            <input type="text" id="username" class="notInFocus" required />
           </form>
       </header>
       <main id="mainContent">
@@ -60,13 +60,16 @@ class MyIndex extends HTMLElement {
     this.isInputInFocus = !this.isInputInFocus;
     let header = this.shadowRoot.querySelector('header');
     let profileIcon = this.shadowRoot.querySelector('#profileIcon');
+    let inputField = this.shadowRoot.querySelector('#username');
 
     if(this.isInputInFocus) {
       header.style.backgroundColor = "White";
       profileIcon.style.color = "Black";
+      inputField.className = "inFocus"
     } else { 
       header.style.backgroundColor = "rgb(240,108,116)";
       profileIcon.style.color = "White";
+      inputField.className = "notInFocus"
     }
   }
 
