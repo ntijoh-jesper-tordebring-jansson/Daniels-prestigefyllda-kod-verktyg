@@ -1,0 +1,79 @@
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+    }
+
+    #forkDiv {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px; /* Increased padding */
+        max-width: 800px; /* Change size here */
+        margin: auto;
+        border: 1px solid #ddd; /* Optional: add a border for better visibility */
+    }
+
+    h3 {
+        color: #333;
+        margin: 0 0 10px 0;
+    }
+
+    p {
+        color: #666;
+        margin: 5px 0 20px 0;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    a:hover {
+        color: #0056b3;
+    }
+
+    /* Code Block Styles */
+    code {
+        display: block;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow-x: auto; /* For long lines */
+    }
+
+    /* Form Styles */
+    form {
+        margin-top: 20px;
+    }
+
+    /* Adjusted Input for Comments */
+    textarea {
+        width: calc(100% - 22px); /* Full width accounting for padding */
+        height: 100px; /* Change this value for height */
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 10px;
+        font-size: 16px;
+        resize: vertical; /* Allows vertical resizing */
+    }
+
+    /* Radio Button Styles */
+    #optionsForm {
+        margin-top: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 5px;
+    }
