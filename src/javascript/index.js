@@ -14,7 +14,7 @@ class MyIndex extends HTMLElement {
       <header>
           <span id="profileIcon" class="material-icons">&#xe851;</span>
           <form id="githubForm">
-            <input type="text" id="username" placeholder="Enter GitHub username" required />
+            <input type="text" id="username" required />
             <button type="submit">Submit</button>
           </form>
       </header>
