@@ -188,7 +188,7 @@ textarea {
 #commentForm button {
     padding: 10px 15px 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 2px;
     color: white;
     background-color: rgb(47, 198, 148);
     transition: 100ms background-color ease-in;
