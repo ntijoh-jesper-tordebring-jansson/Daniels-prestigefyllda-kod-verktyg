@@ -1,7 +1,9 @@
 class MyIndex extends HTMLElement {
-  constructor () {
-    super()
-    this.attachShadow({ mode: 'open' })
+  isInputInFocus = false;
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
   }
 
   async connectedCallback () {
@@ -12,10 +14,9 @@ class MyIndex extends HTMLElement {
       </style>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <header>
-          <span id="profileIcon" class="material-icons">&#xe851;</span>
           <form id="githubForm">
-            <input type="text" id="username" required />
-            <button type="submit">Submit</button>
+            <span id="profileIcon" class="material-icons">&#xe851;</span>
+            <input type="text" id="username" class="notInFocus" required />
           </form>
       </header>
       <main id="mainContent">
@@ -27,12 +28,49 @@ class MyIndex extends HTMLElement {
       </main>
     `
 
-    const form = this.shadowRoot.getElementById('githubForm')
-    form.addEventListener('submit', event => {
-      event.preventDefault()
-      const username = this.shadowRoot.getElementById('username').value
-      this.handleSubmit(username)
+    const inputField = this.shadowRoot.querySelector('#username');
+
+    inputField.addEventListener('keydown', (event) => {
+      if(event.code === "Enter") {
+        event.preventDefault();
+
+        const username = this.shadowRoot.querySelector('#username').value;
+        this.handleSubmit(username);
+      }
+    });
+
+    inputField.addEventListener('focus', () => {
+      this.#ToggleInputFocus();
     })
+
+    inputField.addEventListener('focusout', () => {
+      this.#ToggleInputFocus();
+    })
+  }
+
+  disconnectedCallback() {
+    const inputField = this.shadowRoot.querySelector('#username');
+
+    inputField.removeEventListener('keydown');
+    inputField.removeEventListener('focus');
+    inputField.removeEventListener('focusout');
+  }
+
+  #ToggleInputFocus() {
+    this.isInputInFocus = !this.isInputInFocus;
+    let header = this.shadowRoot.querySelector('header');
+    let profileIcon = this.shadowRoot.querySelector('#profileIcon');
+    let inputField = this.shadowRoot.querySelector('#username');
+
+    if(this.isInputInFocus) {
+      header.style.backgroundColor = "White";
+      profileIcon.style.color = "Black";
+      inputField.className = "inFocus"
+    } else { 
+      header.style.backgroundColor = "rgb(240,108,116)";
+      profileIcon.style.color = "White";
+      inputField.className = "notInFocus"
+    }
   }
 
   async handleSubmit (username) {
@@ -78,7 +116,7 @@ class MyIndex extends HTMLElement {
         <div id="forkWrapper"> 
           <h3 id='repoH3'>${repo.name}</h3>
           <div class="infoText">
-            <button class="forkButton">Show Forks</button>
+            <a class="forkButton">Show Forks</a>
             <span>|</span>
             <a href="${repo.html_url}" target="_blank">Show on Github</a>
             <p>${repo.forks_count}</p>
