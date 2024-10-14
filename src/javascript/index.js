@@ -199,15 +199,15 @@ class MyIndex extends HTMLElement {
 
                 <label>
                     <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
-                    <p>Klar</p>
+                    <p class="optionLabel"><span>&#10003;</span> Klar</p>
                 </label>
                 <label>
                     <input class="optionInput" type="radio" name="action_required" id="option2" value="option2">
-                    <p>Åtgärd Krävs</p>
+                    <p class="optionLabel"><span>&#10227;</span> Åtgärd Krävs</p>
                 </label>
                 <label>
                     <input class="optionInput" type="radio" name="action_required" id="option3" value="option3" checked>
-                    <p>Ej bedömd</p>
+                    <p class="optionLabel"><span>&#8856;</span> Ej bedömd</p>
                 </label>
 
                 <button type="submit">Save</button>
@@ -215,12 +215,7 @@ class MyIndex extends HTMLElement {
         </div>
       `
 
-
-      
-
       forkList.appendChild(forkItem)
-
-
 
 	  console.log('hej')
 
@@ -244,7 +239,7 @@ class MyIndex extends HTMLElement {
 		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
 		if (testContainer) {
 			data.testResults.forEach((element) => {
-			testContainer.innerHTML += `<p>Test "${element.description}": ${element.status}</p>`;
+			testContainer.innerHTML += `<p class="testText">Test "${element.description}": ${element.status}</p>`;
 		});
 		} else {
 			console.error(`Test container for ${username + repoName} not found`);

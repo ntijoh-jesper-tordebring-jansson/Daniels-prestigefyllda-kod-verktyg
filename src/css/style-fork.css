@@ -19,6 +19,7 @@
 }
 
 .forkTest {
+    padding: 10px 0 10px 0;
     border-bottom: 1px solid #ddd;
 }
 
@@ -33,10 +34,15 @@ p {
     margin: 5px 0 5px 0;
 }
 
+.testText {
+    font-size: 15px;
+}
+
 a {
     color: #007bff;
     text-decoration: none;
     transition: color 0.3s;
+    font-size: 14px;
 }
 
 a:hover {
@@ -129,9 +135,14 @@ textarea {
     font-size: 16px;
 }
 
-#commentForm label p {
+#commentForm .optionLabel {
     margin: 0;
     margin-left: 5px;
+    opacity: 0.5;
+}
+
+#commentForm .optionLabel span {
+    font-size: 20px;
 }
 
 #commentForm .optionInput {
@@ -170,10 +181,20 @@ textarea {
     transform: scale(1);
 }
 
+#commentForm .optionInput:hover {
+    cursor: pointer;
+}
+
 #commentForm button {
     padding: 10px 15px 10px 15px;
     border: none;
     border-radius: 5px;
     color: white;
     background-color: rgb(47, 198, 148);
+    transition: 100ms background-color ease-in;
+}
+
+#commentForm button:hover {
+    cursor: pointer;
+    background-color: rgb(40, 173, 129);
 }
