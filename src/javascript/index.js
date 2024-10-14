@@ -126,14 +126,36 @@ class MyIndex extends HTMLElement {
 
       const [username, repoName] = fork.full_name.split('/');
       forkItem.innerHTML = `
-        <style>
-          ${styles}
-        </style>
-        <div id="forkDiv">
-            <h3>${repoName}</h3>
-            <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
-            <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
-        </div>
+<style>
+    ${styles}
+</style>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <div id="forkDiv">
+      <h3>${repoName}</h3>
+      <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
+      <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+      <code>
+      </code>
+      <form id="commentform">
+          <input type="text" id="commentinput" placeholder="Enter your comment" required />
+          <button type="submit">Submit</button>
+      </form>
+
+      <form id="optionsForm">
+          <label>
+              <input type="checkbox" name="Klar" id="option1" value="option1">
+              Klar
+          </label>
+          <label>
+              <input type="checkbox" name="action_required" id="option2" value="option2">
+              Åtgärd Krävs
+          </label>
+          <label>
+              <input type="checkbox" name="assessment_status" id="option3" value="option3" checked>
+              Ej bedömd
+          </label>
+      </form>
+  </div>
       `;
       
       repoList.appendChild(forkItem);
