@@ -8,6 +8,7 @@
 #profileIcon{
     opacity: 50%;
     margin-left: 10px;
+    transition: 100ms color ease-in;
 }
 
 #githubForm {
@@ -19,10 +20,13 @@
 }
 
 #username {
+    width: 100%;
+    height: 50%;
     font-size: 18px;
     padding: 10px;
     border: none;
     background-color: transparent;
+    transition: 100ms -webkit-box-shadow ease-in;
 }
 
 #username:focus {
@@ -51,6 +55,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: 100ms background-color ease-in;
 }
 
 header h2 {

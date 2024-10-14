@@ -64,13 +64,13 @@ class MyIndex extends HTMLElement {
     let inputField = this.shadowRoot.querySelector('#username');
 
     if(this.isInputInFocus) {
+      inputField.className = "inFocus"
       header.style.backgroundColor = "White";
       profileIcon.style.color = "Black";
-      inputField.className = "inFocus"
     } else { 
+      inputField.className = "notInFocus"
       header.style.backgroundColor = "rgb(240,108,116)";
       profileIcon.style.color = "White";
-      inputField.className = "notInFocus"
     }
   }
 
