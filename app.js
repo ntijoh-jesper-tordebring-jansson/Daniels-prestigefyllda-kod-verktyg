@@ -1,11 +1,12 @@
 // Load external modules installed thru npm
-const express = require('express')
-const dotenv = require('dotenv')
+const express = require('express');
+const dotenv = require('dotenv');
 const path = require('path');
 
 // Load custom modules
 const Api = require('./middleware/api');
-const Test = require('./middleware/tests')
+const Test = require('./middleware/tests');
+const DbController = require('./database/db_controller');
 
 // Configure dotenv (which makes is possible to use .env files)
 dotenv.config();
@@ -14,7 +15,7 @@ dotenv.config();
 const PORT = process.env.NODEJS_RUNTIME_PORT;
 
 // Create the express app
-const app = express()
+const app = express();
 
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
@@ -43,19 +44,24 @@ app.post('/search', async (req, res) => {
 app.post('/get-forks', async (req, res) => {
     const fullname = req.body.fullname;
     const api = new Api();
+    const dbController = new DbController();
 
     try {
         const forks = await api.getForks(fullname);
 
         const forksWithContent = await Promise.all(forks.map(async (fork) => {
             const manifest = await api.getManifestFile(fork.full_name.full_name);
-            const fileContent = await api.getFileContent(fork.full_name.full_name, manifest.filePath); 
-            
+            const fileContent = await api.getFileContent(fork.full_name.full_name, manifest.filePath);
+
+            const { comment, status } = await dbController.readFromDb(fork.full_name.full_name) || { comment: null, status: null };
+
             return {
                 "full_name": fork.full_name.full_name,
                 "gh_link": fork.full_name.html_url,
                 "fileContent": fileContent,
-                "testFilePath": manifest.filePath
+                "testFilePath": manifest.filePath,
+                "comment": comment,
+                "status": status
             };
         }));
 
@@ -85,30 +91,25 @@ app.post('/run-tests', async (req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.post('/submit-review', async (req, res) => {
-    const { repoFullname, reviewComment } = req.body;
-    // Spara kommentaren till GitHub eller databas
-    // ...
-    res.status(200).json({ message: 'Review submitted successfully' });
+    const { repoFullname, reviewComment, status } = req.body;
+    const dbController = new DbController();
+
+    try {
+        const existingData = await dbController.readFromDb(repoFullname);
+        
+        if (existingData) {
+            await dbController.updateInDb(repoFullname, reviewComment, status);
+        } else {
+            await dbController.insertIntoDb(repoFullname, reviewComment, status);
+        }
+
+        res.status(200).json({ message: 'Review submitted successfully' });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
 });
-
-
-
-
 
 // Confirm that the server is running
 app.listen(PORT, () => {
