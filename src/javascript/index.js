@@ -99,7 +99,9 @@ class MyIndex extends HTMLElement {
 
   async displayRepos (repos) {
     const repoList = this.shadowRoot.querySelector('#repoList')
-    repoList.innerHTML = '' // Clear previous content
+    
+    this.#clearSite();
+
     const styles = await this.#loadStyles('style-repo')
 
     if (repos.length === 0) {
@@ -157,10 +159,18 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  async forkRender (forkData) {
+  #clearSite() {
     const repoList = this.shadowRoot.querySelector('#repoList')
     const forkList = this.shadowRoot.querySelector('#forkList')
-    repoList.innerHTML = '' // Clear previous contents
+
+    repoList.innerHTML = '';
+    forkList.innerHTML = '';
+  }
+
+  async forkRender (forkData) {
+    this.#clearSite();
+    
+    const forkList = this.shadowRoot.querySelector('#forkList')
 
     const styles = await this.#loadStyles('style-fork')
 
@@ -182,7 +192,10 @@ class MyIndex extends HTMLElement {
             <div id="${username + repoName}-tests" class="forkTest"></div>
   
             <form id="commentForm">
-                <input type="text" id="commentInput" placeholder="Comment" required />
+                <label class="commentLabel">
+                  <input type="text" id="commentInput" placeholder=" " />
+                  <span class="floatingCommentLabel">Comment</span>
+                </label>
 
                 <label>
                     <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
