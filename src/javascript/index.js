@@ -129,13 +129,13 @@ class MyIndex extends HTMLElement {
 <style>
     ${styles}
 </style>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <div id="forkDiv">
       <h3>${repoName}</h3>
       <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
       <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
-      <code>
-      </code>
+         <pre><code class="javascript">
+            ${fork.fileContent}
+        </code></pre>
       <form id="commentform">
           <input type="text" id="commentinput" placeholder="Enter your comment" required />
           <button type="submit">Submit</button>
@@ -143,15 +143,15 @@ class MyIndex extends HTMLElement {
 
       <form id="optionsForm">
           <label>
-              <input type="checkbox" name="Klar" id="option1" value="option1">
+              <input type="radio" name="action_required" id="option1" value="option1">
               Klar
           </label>
           <label>
-              <input type="checkbox" name="action_required" id="option2" value="option2">
+              <input type="radio" name="action_required" id="option2" value="option2">
               Åtgärd Krävs
           </label>
           <label>
-              <input type="checkbox" name="assessment_status" id="option3" value="option3" checked>
+              <input type="radio" name="action_required" id="option3" value="option3" checked>
               Ej bedömd
           </label>
       </form>
@@ -166,6 +166,7 @@ class MyIndex extends HTMLElement {
     const response = await fetch(`src/css/${styleFile}.css`);
     return await response.text();
   }
+  
 }
 
 customElements.define('my-index', MyIndex);
