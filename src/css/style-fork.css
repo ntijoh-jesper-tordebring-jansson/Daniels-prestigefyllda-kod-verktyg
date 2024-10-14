@@ -1,79 +1,142 @@
-    /* General Styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f9;
-        margin: 0;
-        padding: 20px;
-    }
 
-    #forkDiv {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 30px; /* Increased padding */
-        max-width: 800px; /* Change size here */
-        margin: auto;
-        border: 1px solid #ddd; /* Optional: add a border for better visibility */
-    }
+#forkList {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
 
-    h3 {
-        color: #333;
-        margin: 0 0 10px 0;
-    }
+#forkDiv {
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px; /* Increased padding */
+    /* max-width: 800px; */ /*Change size here */
+    border: 1px solid #ddd; /* Optional: add a border for better visibility */
+    width: 35vw;
+}
 
-    p {
-        color: #666;
-        margin: 5px 0 20px 0;
-    }
+.forkTest {
+    border-bottom: 1px solid #ddd;
+}
 
-    a {
-        color: #007bff;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
+h3 {
+    color: #333;
+    margin: 0 0 10px 0;
+}
 
-    a:hover {
-        color: #0056b3;
-    }
+p {
+    color: #666;
+    margin: 5px 0 5px 0;
+}
 
-    /* Code Block Styles */
-    code {
-        display: block;
-        background-color: #f0f0f0;
-        padding: 10px;
-        border-radius: 4px;
-        margin: 20px 0;
-        overflow-x: auto; /* For long lines */
-    }
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
 
-    /* Form Styles */
-    form {
-        margin-top: 20px;
-    }
+a:hover {
+    color: #0056b3;
+}
 
-    /* Adjusted Input for Comments */
-    textarea {
-        width: calc(100% - 22px); /* Full width accounting for padding */
-        height: 100px; /* Change this value for height */
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-right: 10px;
-        font-size: 16px;
-        resize: vertical; /* Allows vertical resizing */
-    }
+/* Code Block Styles */
+code {
+    display: block;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 20px 0;
+    overflow-x: auto; /* For long lines */
+}
 
-    /* Radio Button Styles */
-    #optionsForm {
-        margin-top: 20px;
-    }
+/* Form Styles */
+#commentForm {
+    margin-top: 20px;
+}
 
-    label {
-        display: block;
-        margin-bottom: 10px;
-        font-size: 16px;
-    }
+#commentInput {
+    width: 100%;
+    font-size: 16px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
 
-    input[type="checkbox"] {
-        margin-right: 5px;
-    }
+/* Adjusted Input for Comments */
+textarea {
+    width: calc(100% - 22px); /* Full width accounting for padding */
+    height: 100px; /* Change this value for height */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 16px;
+    resize: vertical; /* Allows vertical resizing */
+}
+
+/* Radio Button Styles
+#optionsForm {
+    margin-top: 20px;
+} */
+
+#commentForm label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+#commentForm label p {
+    margin: 0;
+    margin-left: 5px;
+}
+
+#commentForm .optionInput {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    appearance: none;
+    /* For iOS < 15 to remove gradient background */
+    background-color: #fff;
+    /* Not removed via appearance */
+    margin: 0;
+
+    font: inherit;
+    color: #969696;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid #969696;
+    border-radius: 50%;
+
+    transform: translateY(-0.075em);
+
+    display: grid;
+    place-content: center;
+}
+
+#commentForm .optionInput::before {
+    content: "";
+    width: 1.15em;
+    height: 1.15em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em rgb(47, 198, 148);
+}
+
+#commentForm .optionInput:checked::before {
+    transform: scale(1);
+}
+
+#commentForm button {
+    padding: 10px 15px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(47, 198, 148);
+}

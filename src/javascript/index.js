@@ -25,6 +25,7 @@ class MyIndex extends HTMLElement {
             <p>Enter your GitHub username in the header field</p>
           </div>
           <div id="repoList"></div> <!-- Container for the repos -->
+          <div id="forkList"></div> <!-- Container for the forks -->
       </main>
     `
 
@@ -90,14 +91,14 @@ class MyIndex extends HTMLElement {
   }
 
   clearIntroText () {
-    const introText = this.shadowRoot.getElementById('introText')
+    const introText = this.shadowRoot.querySelector('#introText')
     if (introText) {
       introText.remove()
     }
   }
 
   async displayRepos (repos) {
-    const repoList = this.shadowRoot.getElementById('repoList')
+    const repoList = this.shadowRoot.querySelector('#repoList')
     repoList.innerHTML = '' // Clear previous content
     const styles = await this.#loadStyles('style-repo')
 
@@ -157,7 +158,8 @@ class MyIndex extends HTMLElement {
   }
 
   async forkRender (forkData) {
-    const repoList = this.shadowRoot.getElementById('repoList')
+    const repoList = this.shadowRoot.querySelector('#repoList')
+    const forkList = this.shadowRoot.querySelector('#forkList')
     repoList.innerHTML = '' // Clear previous contents
 
     const styles = await this.#loadStyles('style-fork')
@@ -171,33 +173,31 @@ class MyIndex extends HTMLElement {
             ${styles}
         </style>
         <div id="forkDiv">
-            <h3>${repoName}</h3>
-            <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
-            <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+            <h3>${username}/${repoName}</h3>
                <pre><code class="javascript">
                   ${fork.fileContent}
               </code></pre>
-            
-            <div class="${username + repoName}-tests"></div>
+
+            <a href="${fork.gh_link}" target="_blank">Show on Github</a>
+            <div id="${username + repoName}-tests" class="forkTest"></div>
   
-            <form id="commentform">
-                <input type="text" id="commentinput" placeholder="Enter your comment" required />
-                <button type="submit">Submit</button>
-            </form>
-  
-            <form id="optionsForm">
+            <form id="commentForm">
+                <input type="text" id="commentInput" placeholder="Comment" required />
+
                 <label>
-                    <input type="radio" name="action_required" id="option1" value="option1">
-                    Klar
+                    <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
+                    <p>Klar</p>
                 </label>
                 <label>
-                    <input type="radio" name="action_required" id="option2" value="option2">
-                    Åtgärd Krävs
+                    <input class="optionInput" type="radio" name="action_required" id="option2" value="option2">
+                    <p>Åtgärd Krävs</p>
                 </label>
                 <label>
-                    <input type="radio" name="action_required" id="option3" value="option3" checked>
-                    Ej bedömd
+                    <input class="optionInput" type="radio" name="action_required" id="option3" value="option3" checked>
+                    <p>Ej bedömd</p>
                 </label>
+
+                <button type="submit">Save</button>
             </form>
         </div>
       `
@@ -205,7 +205,7 @@ class MyIndex extends HTMLElement {
 
       
 
-      repoList.appendChild(forkItem)
+      forkList.appendChild(forkItem)
 
 
 
@@ -228,7 +228,7 @@ class MyIndex extends HTMLElement {
         const data = await response.json()
         
 
-		const testContainer = this.shadowRoot.querySelector(`.${username + repoName}-tests`);
+		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
 		if (testContainer) {
 			data.testResults.forEach((element) => {
 			testContainer.innerHTML += `<p>Test "${element.description}": ${element.status}</p>`;

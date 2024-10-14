@@ -19,7 +19,6 @@
 }
 
 #username {
-    font-family: Arial, sans-serif;
     font-size: 18px;
     padding: 10px;
     border: none;
@@ -56,7 +55,6 @@ header {
 
 header h2 {
     color: white;
-    font-family: Arial, sans-serif;
     font-size: 2em;
     margin-left: 10px; /* Space between the icon and the text */
 }
@@ -76,14 +74,12 @@ main {
 }
 
 main h1 {
-    font-family: Arial, sans-serif;
     color: black;
     font-size: 2.5em;
     margin-top: 25px;
 }
 
 main p{
-    font-family: Arial, sans-serif;
     color: black;
     margin-top: 10px;
 }
