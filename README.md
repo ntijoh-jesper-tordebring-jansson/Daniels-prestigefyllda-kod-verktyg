@@ -11,3 +11,6 @@ Installera även nodemon med "npm i --save-dev nodemon" för att kunna köra app
 
 # Kör applikationen
 Kör applikationen med "npm run devStart" (för auto restart). 
+
+# Databasen
+För att seed'a databasen, gå in mappen "database" och kör "node seed.js".
