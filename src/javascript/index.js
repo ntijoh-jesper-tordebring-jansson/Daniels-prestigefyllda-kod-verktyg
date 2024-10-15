@@ -1,6 +1,5 @@
-import { loadStyles, clearSite } from "./globalFunctions.js";
-import { ForkCard } from "./forkCard.js";
-import { RepoCard } from "./repoCard.js";
+import { loadStyles } from "./globalFunctions.js";
+import { repoController } from "./repoController.js";
 
 class MyIndex extends HTMLElement {
   isInputInFocus = false;
@@ -88,7 +87,7 @@ class MyIndex extends HTMLElement {
       }
       const data = await response.json()
       this.clearIntroText() // Clear the intro text
-      this.displayRepos(data) // Call the display function
+      repoController.displayRepos(data) // Call the display function
     } catch (error) {
       console.error('Error fetching repos:', error)
     }
@@ -99,104 +98,6 @@ class MyIndex extends HTMLElement {
     if (introText) {
       introText.remove()
     }
-  }
-
-  displayRepos (repos) {
-    const repoList = this.shadowRoot.querySelector('#repoList')
-    
-    clearSite();
-
-    if (repos.length === 0) {
-      repoList.innerHTML = '<p>No repositories found for this user.</p>'
-      return
-    }
-
-    repos.forEach(repo => {
-      const repoItem = document.createElement('repo-card')
-
-      repoItem.setAttribute('data-repoName', repo.name);
-      repoItem.setAttribute('data-githubLink', repo.html_url);
-      repoItem.setAttribute('data-forkCount', repo.forks_count);
-      repoItem.setAttribute('data-repoFullName', repo.full_name);
-
-      repoList.appendChild(repoItem)
-    })
-  }
-
-  static async forkRender (forkData) {
-    clearSite();
-
-    const forkList = document.querySelector("my-index").shadowRoot.querySelector('#forkList')
-
-    for (const fork of forkData) {
-      const forkItem = document.createElement('fork-card')
-      const [username, repoName] = fork.full_name.split('/')
-
-      forkItem.setAttribute('data-username', username);
-      forkItem.setAttribute('data-reponame', repoName);
-      forkItem.setAttribute('data-javascriptcode', fork.fileContent);
-      forkItem.setAttribute('data-githublink', fork.gh_link);
-
-      forkList.appendChild(forkItem)
-
-	  console.log('hej')
-
-      // Fetch test data
-      try {
-        const response = await fetch('/run-tests', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ fullname: fork.full_name })
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch test')
-        }
-
-        const data = await response.json()
-        
-
-		const testContainer = forkItem.shadowRoot.querySelector(`#${username + repoName}-tests`);
-		if (testContainer) {
-			data.testResults.forEach((element) => {
-			testContainer.innerHTML += `<p class="testText">Test "${element.description}": ${element.status}</p>`;
-		});
-		} else {
-			console.error(`Test container for ${username + repoName} not found`);
-		}		
-		
-      } catch (error) {
-        console.error('Error fetching forks:', error)
-      }
-    }
-  }
-
-}
-
-export async function handleForks (fullname) {
-  try {
-    const response = await fetch('/get-forks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ fullname: fullname })
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch forks')
-    }
-
-    const data = await response.json()
-    if (data.length === 0) {
-      console.log('No forks in this repo')
-      return
-    }
-    MyIndex.forkRender(data)
-  } catch (error) {
-    console.error('Error fetching forks:', error)
   }
 }
 

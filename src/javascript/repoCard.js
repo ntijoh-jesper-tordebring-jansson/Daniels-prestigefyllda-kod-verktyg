@@ -1,5 +1,5 @@
 import { loadStyles } from "./globalFunctions.js";
-import { handleForks } from "./index.js";
+import { repoController } from "./repoController.js";
 
 export class RepoCard extends HTMLElement {
     constructor() {
@@ -28,12 +28,12 @@ export class RepoCard extends HTMLElement {
         this.#renderAttributes();
 
         this.shadowRoot.querySelector('.forkButton').addEventListener('click', () =>
-            handleForks(this.getAttribute('data-repoFullName'))
+            repoController.handleForks(this.getAttribute('data-repoFullName'))
         )
     }
 
     disconnectedCallback() {
-        this.shadowRoot.querySelector('.forkButton').removeEventListener('click', handleForks);
+        this.shadowRoot.querySelector('.forkButton').removeEventListener('click', repoController.handleForks);
     }
 
     #renderAttributes() {
