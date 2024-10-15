@@ -25,6 +25,7 @@ class MyIndex extends HTMLElement {
             <p>Enter your GitHub username in the header field</p>
           </div>
           <div id="repoList"></div> <!-- Container for the repos -->
+          <div id="forkList"></div> <!-- Container for the forks -->
       </main>
     `
 
@@ -63,13 +64,13 @@ class MyIndex extends HTMLElement {
     let inputField = this.shadowRoot.querySelector('#username');
 
     if(this.isInputInFocus) {
+      inputField.className = "inFocus"
       header.style.backgroundColor = "White";
       profileIcon.style.color = "Black";
-      inputField.className = "inFocus"
     } else { 
+      inputField.className = "notInFocus"
       header.style.backgroundColor = "rgb(240,108,116)";
       profileIcon.style.color = "White";
-      inputField.className = "notInFocus"
     }
   }
 
@@ -90,15 +91,17 @@ class MyIndex extends HTMLElement {
   }
 
   clearIntroText () {
-    const introText = this.shadowRoot.getElementById('introText')
+    const introText = this.shadowRoot.querySelector('#introText')
     if (introText) {
       introText.remove()
     }
   }
 
   async displayRepos (repos) {
-    const repoList = this.shadowRoot.getElementById('repoList')
-    repoList.innerHTML = '' // Clear previous content
+    const repoList = this.shadowRoot.querySelector('#repoList')
+    
+    this.#clearSite();
+
     const styles = await this.#loadStyles('style-repo')
 
     if (repos.length === 0) {
@@ -156,9 +159,18 @@ class MyIndex extends HTMLElement {
     }
   }
 
+  #clearSite() {
+    const repoList = this.shadowRoot.querySelector('#repoList')
+    const forkList = this.shadowRoot.querySelector('#forkList')
+
+    repoList.innerHTML = '';
+    forkList.innerHTML = '';
+  }
+
   async forkRender (forkData) {
-    const repoList = this.shadowRoot.getElementById('repoList')
-    repoList.innerHTML = '' // Clear previous contents
+    this.#clearSite();
+    
+    const forkList = this.shadowRoot.querySelector('#forkList')
 
     const styles = await this.#loadStyles('style-fork')
 
@@ -171,34 +183,42 @@ class MyIndex extends HTMLElement {
             ${styles}
         </style>
         <div id="forkDiv">
-            <h3>${repoName}</h3>
-            <p>by <a href="https://github.com/${username}" target="_blank">${username}</a></p>
-            <a href="${fork.gh_link}" target="_blank">Show Fork on Github</a>
+            <h3>${username}/${repoName}</h3>
                <pre><code class="javascript">
                   ${fork.fileContent}
-              </code></pre>
-            
-            <div class="${username + repoName}-tests"></div>  
-            <form id="${username + repoName}-optionsForm">
+
+
+            <a href="${fork.gh_link}" target="_blank">Show on Github</a>
+            <div id="${username + repoName}-tests" class="forkTest"></div>
+  
+            <form id="commentForm">
+                <label class="commentLabel">
+                  <input type="text" id="commentInput" placeholder=" " />
+                  <span class="floatingCommentLabel">Comment</span>
+                </label>
+
                 <label>
-                    <input class="${username + repoName}-status-done" type="radio" name="action_required" id="option1" value="done">
-                    Klar
+                    <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
+                    <p class="optionLabel"><span>&#10003;</span> Klar</p>
                 </label>
                 <label>
-                    <input class="${username + repoName}-status-action_required" type="radio" name="action_required" id="option2" value="action_required">
-                    Åtgärd Krävs
+                    <input class="optionInput" type="radio" name="action_required" id="option2" value="option2">
+                    <p class="optionLabel"><span>&#10227;</span> Åtgärd Krävs</p>
                 </label>
                 <label>
-                    <input class="${username + repoName}-status-not_graded" type="radio" name="action_required" id="option3" value="not_graded" checked>
-                    Ej bedömd
+                    <input class="optionInput" type="radio" name="action_required" id="option3" value="option3" checked>
+                    <p class="optionLabel"><span>&#8856;</span> Ej bedömd</p>
                 </label>
-				<input type="text" class="${username + repoName}-comment" id="commentinput" placeholder="Enter your comment" required />
-                <button class="${username + repoName}-submit-form" type="submit">Submit</button>
+
+                <button type="submit">Save</button>
             </form>
         </div>
       `
 
-      repoList.appendChild(forkItem)
+
+      forkList.appendChild(forkItem)
+
+	  console.log('hej')
 
       // Fetch test data
       try {
@@ -262,10 +282,10 @@ class MyIndex extends HTMLElement {
 
 
 
-		const testContainer = this.shadowRoot.querySelector(`.${username + repoName}-tests`);
+		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
 		if (testContainer) {
 			data.testResults.forEach((element) => {
-			testContainer.innerHTML += `<p>Test "${element.description}": ${element.status}</p>`;
+			testContainer.innerHTML += `<p class="testText">Test "${element.description}": ${element.status}</p>`;
 		});
 		} else {
 			console.error(`Test container for ${username + repoName} not found`);
