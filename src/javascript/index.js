@@ -186,7 +186,7 @@ class MyIndex extends HTMLElement {
             <h3>${username}/${repoName}</h3>
                <pre><code class="javascript">
                   ${fork.fileContent}
-              </code></pre>
+
 
             <a href="${fork.gh_link}" target="_blank">Show on Github</a>
             <div id="${username + repoName}-tests" class="forkTest"></div>
@@ -215,6 +215,7 @@ class MyIndex extends HTMLElement {
         </div>
       `
 
+
       forkList.appendChild(forkItem)
 
 	  console.log('hej')
@@ -235,6 +236,51 @@ class MyIndex extends HTMLElement {
 
         const data = await response.json()
         
+		this.shadowRoot.querySelector(`.${username + repoName}-comment`).value = fork.comment;
+
+		console.log(`${username + repoName}`);
+
+		switch (fork.status) {
+			case "done":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-done`).checked = true;
+				break;
+			case "action_required":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-action_required`).checked = true;
+				break;
+			case "not_graded":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-not_graded`).checked = true;
+				break;
+		}
+
+
+		this.shadowRoot.querySelector(`.${username + repoName}-submit-form`).addEventListener('click', async (e) => {
+			e.preventDefault();
+			const text = this.shadowRoot.querySelector(`.${username + repoName}-comment`).value;
+			const status = this.shadowRoot.querySelector(`#${username + repoName}-optionsForm`).action_required.value;
+
+			console.log(text + " " + status);
+
+			try {
+			const response = await fetch('/submit-review', {
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ "repoFullname" : username + "/" + repoName, "reviewComment" : text, "status" : status })
+			})
+		
+			if (!response.ok) {
+				throw new Error('Failed to fetch forks')
+			}
+		
+		
+			this.forkRender();
+			} catch (error) {
+			console.error('Error fetching forks:', error)
+			}
+		})
+
+
 
 		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
 		if (testContainer) {
@@ -243,7 +289,7 @@ class MyIndex extends HTMLElement {
 		});
 		} else {
 			console.error(`Test container for ${username + repoName} not found`);
-		}		
+		}	
 		
       } catch (error) {
         console.error('Error fetching forks:', error)
