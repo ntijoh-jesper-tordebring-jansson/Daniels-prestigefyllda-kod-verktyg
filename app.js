@@ -53,7 +53,7 @@ app.post('/get-forks', async (req, res) => {
             const manifest = await api.getManifestFile(fork.full_name.full_name);
             const fileContent = await api.getFileContent(fork.full_name.full_name, manifest.filePath);
 
-            const { comment, status } = await dbController.readFromDb(fork.full_name.full_name) || { comment: null, status: null };
+            const { comment, status } = await dbController.readFromDb(fork.full_name.full_name) || { comment: null, status: "not_graded" };
 
             return {
                 "full_name": fork.full_name.full_name,

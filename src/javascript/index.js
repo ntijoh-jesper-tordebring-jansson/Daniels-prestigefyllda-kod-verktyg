@@ -178,38 +178,27 @@ class MyIndex extends HTMLElement {
                   ${fork.fileContent}
               </code></pre>
             
-            <div class="${username + repoName}-tests"></div>
-  
-            <form id="commentform">
-                <input type="text" id="commentinput" placeholder="Enter your comment" required />
-                <button type="submit">Submit</button>
-            </form>
-  
-            <form id="optionsForm">
+            <div class="${username + repoName}-tests"></div>  
+            <form id="${username + repoName}-optionsForm">
                 <label>
-                    <input type="radio" name="action_required" id="option1" value="option1">
+                    <input class="${username + repoName}-status-done" type="radio" name="action_required" id="option1" value="done">
                     Klar
                 </label>
                 <label>
-                    <input type="radio" name="action_required" id="option2" value="option2">
+                    <input class="${username + repoName}-status-action_required" type="radio" name="action_required" id="option2" value="action_required">
                     Åtgärd Krävs
                 </label>
                 <label>
-                    <input type="radio" name="action_required" id="option3" value="option3" checked>
+                    <input class="${username + repoName}-status-not_graded" type="radio" name="action_required" id="option3" value="not_graded" checked>
                     Ej bedömd
                 </label>
+				<input type="text" class="${username + repoName}-comment" id="commentinput" placeholder="Enter your comment" required />
+                <button class="${username + repoName}-submit-form" type="submit">Submit</button>
             </form>
         </div>
       `
 
-
-      
-
       repoList.appendChild(forkItem)
-
-
-
-	  console.log('hej')
 
       // Fetch test data
       try {
@@ -227,6 +216,51 @@ class MyIndex extends HTMLElement {
 
         const data = await response.json()
         
+		this.shadowRoot.querySelector(`.${username + repoName}-comment`).value = fork.comment;
+
+		console.log(`${username + repoName}`);
+
+		switch (fork.status) {
+			case "done":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-done`).checked = true;
+				break;
+			case "action_required":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-action_required`).checked = true;
+				break;
+			case "not_graded":
+				this.shadowRoot.querySelector(`.${username + repoName}-status-not_graded`).checked = true;
+				break;
+		}
+
+
+		this.shadowRoot.querySelector(`.${username + repoName}-submit-form`).addEventListener('click', async (e) => {
+			e.preventDefault();
+			const text = this.shadowRoot.querySelector(`.${username + repoName}-comment`).value;
+			const status = this.shadowRoot.querySelector(`#${username + repoName}-optionsForm`).action_required.value;
+
+			console.log(text + " " + status);
+
+			try {
+			const response = await fetch('/submit-review', {
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ "repoFullname" : username + "/" + repoName, "reviewComment" : text, "status" : status })
+			})
+		
+			if (!response.ok) {
+				throw new Error('Failed to fetch forks')
+			}
+		
+		
+			this.forkRender();
+			} catch (error) {
+			console.error('Error fetching forks:', error)
+			}
+		})
+
+
 
 		const testContainer = this.shadowRoot.querySelector(`.${username + repoName}-tests`);
 		if (testContainer) {
@@ -235,7 +269,7 @@ class MyIndex extends HTMLElement {
 		});
 		} else {
 			console.error(`Test container for ${username + repoName} not found`);
-		}		
+		}	
 		
       } catch (error) {
         console.error('Error fetching forks:', error)
