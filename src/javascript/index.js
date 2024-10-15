@@ -1,5 +1,6 @@
 import { loadStyles, clearSite } from "./globalFunctions.js";
 import { ForkCard } from "./forkCard.js";
+import { RepoCard } from "./repoCard.js";
 
 class MyIndex extends HTMLElement {
   isInputInFocus = false;
@@ -100,12 +101,10 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  async displayRepos (repos) {
+  displayRepos (repos) {
     const repoList = this.shadowRoot.querySelector('#repoList')
     
     clearSite();
-
-    const styles = await loadStyles('style-repo');
 
     if (repos.length === 0) {
       repoList.innerHTML = '<p>No repositories found for this user.</p>'
@@ -113,59 +112,21 @@ class MyIndex extends HTMLElement {
     }
 
     repos.forEach(repo => {
-      const repoItem = document.createElement('div')
+      const repoItem = document.createElement('repo-card')
 
-      repoItem.innerHTML = `
-        <style>
-          ${styles}
-        </style>
-        <div id="forkWrapper"> 
-          <h3 id='repoH3'>${repo.name}</h3>
-          <div class="infoText">
-            <a class="forkButton">Show Forks</a>
-            <span>|</span>
-            <a href="${repo.html_url}" target="_blank">Show on Github</a>
-            <p>${repo.forks_count}</p>
-          </div>
-        </div>
-      `
-      const forkButton = repoItem.querySelector('.forkButton')
-      forkButton.addEventListener('click', () =>
-        this.handleForks(repo.full_name)
-      )
+      repoItem.setAttribute('data-repoName', repo.name);
+      repoItem.setAttribute('data-githubLink', repo.html_url);
+      repoItem.setAttribute('data-forkCount', repo.forks_count);
+      repoItem.setAttribute('data-repoFullName', repo.full_name);
+
       repoList.appendChild(repoItem)
     })
   }
 
-  async handleForks (fullname) {
-    try {
-      const response = await fetch('/get-forks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ fullname: fullname })
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch forks')
-      }
-
-      const data = await response.json()
-      if (data.length === 0) {
-        console.log('No forks in this repo')
-        return
-      }
-      this.forkRender(data)
-    } catch (error) {
-      console.error('Error fetching forks:', error)
-    }
-  }
-
-  async forkRender (forkData) {
+  static async forkRender (forkData) {
     clearSite();
-    
-    const forkList = this.shadowRoot.querySelector('#forkList')
+
+    const forkList = document.querySelector("my-index").shadowRoot.querySelector('#forkList')
 
     for (const fork of forkData) {
       const forkItem = document.createElement('fork-card')
@@ -212,6 +173,31 @@ class MyIndex extends HTMLElement {
     }
   }
 
+}
+
+export async function handleForks (fullname) {
+  try {
+    const response = await fetch('/get-forks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ fullname: fullname })
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch forks')
+    }
+
+    const data = await response.json()
+    if (data.length === 0) {
+      console.log('No forks in this repo')
+      return
+    }
+    MyIndex.forkRender(data)
+  } catch (error) {
+    console.error('Error fetching forks:', error)
+  }
 }
 
 customElements.define('my-index', MyIndex)
