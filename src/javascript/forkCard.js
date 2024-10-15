@@ -1,6 +1,6 @@
 import { loadStyles } from "./globalFunctions.js";
 
-class ForkCard extends HTMLElement {
+export class ForkCard extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" });

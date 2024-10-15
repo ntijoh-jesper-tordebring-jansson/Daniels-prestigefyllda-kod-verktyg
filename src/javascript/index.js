@@ -1,4 +1,5 @@
-import { loadStyles } from "./globalFunctions.js";
+import { loadStyles, clearSite } from "./globalFunctions.js";
+import { ForkCard } from "./forkCard.js";
 
 class MyIndex extends HTMLElement {
   isInputInFocus = false;
@@ -102,7 +103,7 @@ class MyIndex extends HTMLElement {
   async displayRepos (repos) {
     const repoList = this.shadowRoot.querySelector('#repoList')
     
-    this.#clearSite();
+    clearSite();
 
     const styles = await loadStyles('style-repo');
 
@@ -161,16 +162,8 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  #clearSite() {
-    const repoList = this.shadowRoot.querySelector('#repoList')
-    const forkList = this.shadowRoot.querySelector('#forkList')
-
-    repoList.innerHTML = '';
-    forkList.innerHTML = '';
-  }
-
   async forkRender (forkData) {
-    this.#clearSite();
+    clearSite();
     
     const forkList = this.shadowRoot.querySelector('#forkList')
 
@@ -204,7 +197,7 @@ class MyIndex extends HTMLElement {
         const data = await response.json()
         
 
-		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
+		const testContainer = forkItem.shadowRoot.querySelector(`#${username + repoName}-tests`);
 		if (testContainer) {
 			data.testResults.forEach((element) => {
 			testContainer.innerHTML += `<p class="testText">Test "${element.description}": ${element.status}</p>`;
