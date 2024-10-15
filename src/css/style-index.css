@@ -5,6 +5,15 @@
     box-sizing: border-box;
 }
 
+#forkList {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 #profileIcon{
     opacity: 50%;
     margin-left: 10px;

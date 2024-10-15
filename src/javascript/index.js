@@ -1,3 +1,5 @@
+import { loadStyles } from "./globalFunctions.js";
+
 class MyIndex extends HTMLElement {
   isInputInFocus = false;
 
@@ -7,7 +9,7 @@ class MyIndex extends HTMLElement {
   }
 
   async connectedCallback () {
-    const styles = await this.#loadStyles('style-index')
+    const styles = await loadStyles('style-index');
     this.shadowRoot.innerHTML = `
       <style>
         ${styles}
@@ -102,7 +104,7 @@ class MyIndex extends HTMLElement {
     
     this.#clearSite();
 
-    const styles = await this.#loadStyles('style-repo')
+    const styles = await loadStyles('style-repo');
 
     if (repos.length === 0) {
       repoList.innerHTML = '<p>No repositories found for this user.</p>'
@@ -172,48 +174,14 @@ class MyIndex extends HTMLElement {
     
     const forkList = this.shadowRoot.querySelector('#forkList')
 
-    const styles = await this.#loadStyles('style-fork')
-
     for (const fork of forkData) {
-      const forkItem = document.createElement('div')
-
+      const forkItem = document.createElement('fork-card')
       const [username, repoName] = fork.full_name.split('/')
-      forkItem.innerHTML = `
-        <style>
-            ${styles}
-        </style>
-        <div id="forkDiv">
-            <h3>${username}/${repoName}</h3>
-               <pre><code class="javascript">
-                  ${fork.fileContent}
-              </code></pre>
 
-            <a href="${fork.gh_link}" target="_blank">Show on Github</a>
-            <div id="${username + repoName}-tests" class="forkTest"></div>
-  
-            <form id="commentForm">
-                <label class="commentLabel">
-                  <input type="text" id="commentInput" placeholder=" " />
-                  <span class="floatingCommentLabel">Comment</span>
-                </label>
-
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
-                    <p class="optionLabel"><span>&#10003;</span> Klar</p>
-                </label>
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option2" value="option2">
-                    <p class="optionLabel"><span>&#10227;</span> Åtgärd Krävs</p>
-                </label>
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option3" value="option3" checked>
-                    <p class="optionLabel"><span>&#8856;</span> Ej bedömd</p>
-                </label>
-
-                <button type="submit">Save</button>
-            </form>
-        </div>
-      `
+      forkItem.setAttribute('data-username', username);
+      forkItem.setAttribute('data-reponame', repoName);
+      forkItem.setAttribute('data-javascriptcode', fork.fileContent);
+      forkItem.setAttribute('data-githublink', fork.gh_link);
 
       forkList.appendChild(forkItem)
 
@@ -251,10 +219,6 @@ class MyIndex extends HTMLElement {
     }
   }
 
-  async #loadStyles (styleFile) {
-    const response = await fetch(`src/css/${styleFile}.css`)
-    return await response.text()
-  }
 }
 
 customElements.define('my-index', MyIndex)
