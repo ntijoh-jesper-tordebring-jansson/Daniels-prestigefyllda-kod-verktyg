@@ -1,3 +1,6 @@
+import { loadStyles } from "./globalFunctions.js";
+import { repoController } from "./repoController.js";
+
 class MyIndex extends HTMLElement {
   isInputInFocus = false;
 
@@ -7,7 +10,7 @@ class MyIndex extends HTMLElement {
   }
 
   async connectedCallback () {
-    const styles = await this.#loadStyles('style-index')
+    const styles = await loadStyles('style-index');
     this.shadowRoot.innerHTML = `
       <style>
         ${styles}
@@ -84,7 +87,7 @@ class MyIndex extends HTMLElement {
       }
       const data = await response.json()
       this.clearIntroText() // Clear the intro text
-      this.displayRepos(data) // Call the display function
+      repoController.displayRepos(data) // Call the display function
     } catch (error) {
       console.error('Error fetching repos:', error)
     }
@@ -95,165 +98,6 @@ class MyIndex extends HTMLElement {
     if (introText) {
       introText.remove()
     }
-  }
-
-  async displayRepos (repos) {
-    const repoList = this.shadowRoot.querySelector('#repoList')
-    
-    this.#clearSite();
-
-    const styles = await this.#loadStyles('style-repo')
-
-    if (repos.length === 0) {
-      repoList.innerHTML = '<p>No repositories found for this user.</p>'
-      return
-    }
-
-    repos.forEach(repo => {
-      const repoItem = document.createElement('div')
-
-      repoItem.innerHTML = `
-        <style>
-          ${styles}
-        </style>
-        <div id="forkWrapper"> 
-          <h3 id='repoH3'>${repo.name}</h3>
-          <div class="infoText">
-            <a class="forkButton">Show Forks</a>
-            <span>|</span>
-            <a href="${repo.html_url}" target="_blank">Show on Github</a>
-            <p>${repo.forks_count}</p>
-          </div>
-        </div>
-      `
-      const forkButton = repoItem.querySelector('.forkButton')
-      forkButton.addEventListener('click', () =>
-        this.handleForks(repo.full_name)
-      )
-      repoList.appendChild(repoItem)
-    })
-  }
-
-  async handleForks (fullname) {
-    try {
-      const response = await fetch('/get-forks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ fullname: fullname })
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch forks')
-      }
-
-      const data = await response.json()
-      if (data.length === 0) {
-        console.log('No forks in this repo')
-        return
-      }
-      this.forkRender(data)
-    } catch (error) {
-      console.error('Error fetching forks:', error)
-    }
-  }
-
-  #clearSite() {
-    const repoList = this.shadowRoot.querySelector('#repoList')
-    const forkList = this.shadowRoot.querySelector('#forkList')
-
-    repoList.innerHTML = '';
-    forkList.innerHTML = '';
-  }
-
-  async forkRender (forkData) {
-    this.#clearSite();
-    
-    const forkList = this.shadowRoot.querySelector('#forkList')
-
-    const styles = await this.#loadStyles('style-fork')
-
-    for (const fork of forkData) {
-      const forkItem = document.createElement('div')
-
-      const [username, repoName] = fork.full_name.split('/')
-      forkItem.innerHTML = `
-        <style>
-            ${styles}
-        </style>
-        <div id="forkDiv">
-            <h3>${username}/${repoName}</h3>
-               <pre><code class="javascript">
-                  ${fork.fileContent}
-              </code></pre>
-
-            <a href="${fork.gh_link}" target="_blank">Show on Github</a>
-            <div id="${username + repoName}-tests" class="forkTest"></div>
-  
-            <form id="commentForm">
-                <label class="commentLabel">
-                  <input type="text" id="commentInput" placeholder=" " />
-                  <span class="floatingCommentLabel">Comment</span>
-                </label>
-
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option1" value="option1">
-                    <p class="optionLabel"><span>&#10003;</span> Klar</p>
-                </label>
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option2" value="option2">
-                    <p class="optionLabel"><span>&#10227;</span> Åtgärd Krävs</p>
-                </label>
-                <label>
-                    <input class="optionInput" type="radio" name="action_required" id="option3" value="option3" checked>
-                    <p class="optionLabel"><span>&#8856;</span> Ej bedömd</p>
-                </label>
-
-                <button type="submit">Save</button>
-            </form>
-        </div>
-      `
-
-      forkList.appendChild(forkItem)
-
-	  console.log('hej')
-
-      // Fetch test data
-      try {
-        const response = await fetch('/run-tests', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ fullname: fork.full_name })
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch test')
-        }
-
-        const data = await response.json()
-        
-
-		const testContainer = this.shadowRoot.querySelector(`#${username + repoName}-tests`);
-		if (testContainer) {
-			data.testResults.forEach((element) => {
-			testContainer.innerHTML += `<p class="testText">Test "${element.description}": ${element.status}</p>`;
-		});
-		} else {
-			console.error(`Test container for ${username + repoName} not found`);
-		}		
-		
-      } catch (error) {
-        console.error('Error fetching forks:', error)
-      }
-    }
-  }
-
-  async #loadStyles (styleFile) {
-    const response = await fetch(`src/css/${styleFile}.css`)
-    return await response.text()
   }
 }
 
